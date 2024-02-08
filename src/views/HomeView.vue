@@ -1,81 +1,57 @@
-<template>
-  <div class="home">
 
-      <nav>
-        <router-link to="/">Главная</router-link> |
-        <span v-if="!isAuthenticated">
-          <router-link to="/registration">Регистрация</router-link> |
-          <router-link to="/login">Вход</router-link>
-        </span>
-        <span v-if="isAuthenticated">
-          <router-link to="/" @click="logout">Выход</router-link> |
-          <router-link to="/cart">Корзина</router-link> |
-          <!--    <router-link to="/myorders">Мои заказы</router-link>-->
-        </span>
-      </nav>
+<template>
+  <div class="home-container">
+    <!-- Кнопки регистрации и авторизации -->
+    <div class="auth-buttons" v-if="!isAuthenticated">
+      <router-link to="/registration" class="auth-button">Регистрация</router-link>
+      <router-link to="/login" class="auth-button" >Авторизация</router-link>
+    </div>
+    <!-- Никнейм и кнопка выхода -->
+    <div v-else class="user-info">
+      <button  @click="logout" class="logout-button">Выход</button>
+    </div>
 
     <div>
       <h1 class="catalog" @click="getProduct">Каталог товаров</h1>
       <div class="ag-format-container">
       </div>
       <div class="ag-courses_item" v-for="product in products" :key="product.id">
-        <span class="ag-courses-item_link">
-          <div class="ag-courses-item_bg"></div>
 
-          <div class="title">
-            {{ product.name }}
-          </div>
+        <div class="ag-courses-item_bg"></div>
 
-          <div class="ag-courses-item_date-box">
+        <div class="title">
+          Название: {{ product.name }}
+        </div>
+
+        <div class="ag-courses-item_date-box">
             <span class="description">
-            {{ product.description }}
+            Описание: {{ product.description }}
           </span>
-            <p class="price">
-            {{ product.price }}руб.
+          <p class="price">
+            Цена: {{ product.price }}руб.
           </p>
-            <button  v-if="isAuthenticated" @click="addToCart(product)" type="submit" class="btn">В корзину</button>
-            <button  v-if="!isAuthenticated" type="submit" class="btn"><router-link  to="/login" class="btn_cart_link">В корзину</router-link></button>
-          </div>
-        </span>
+          <button  v-if="isAuthenticated" @click="addToCart(product)" type="submit" class="btn">В корзину</button>
+          <button  v-if="!isAuthenticated" type="submit" class="btn"><router-link  to="/login" class="btn_cart_link">В корзину</router-link></button>
+        </div>
+
       </div>
     </div>
   </div>
 </template>
 
+
 <script>
-// @ is an alias to /src
-
-
+import {auth} from '../components/UserLogin.vue'
 export default {
   name: 'HomeView',
   data() {
     return {
       products: [],
       productsInCart: []
-    }
-
+    };
   },
-  methods:{
-    async getProduct(){
-      const url = "https://jurapro.bhuser.ru/api-shop/products";
-      const response = await fetch(url,{
-        method: 'GET',
-            headers: {
-          'Content-Type': 'application/json',
-        },
-
-      });
-      if (response.ok) {
-        const result = await response.json();
-        this.products = result.data
-        console.log('Result: ', result)
-      } else {
-        this.error = "Ошибка";
-        console.error(this.error);
-      }
-
-
-    },
+  methods: {
+    // Добавление товара в корзину (для демонстрации)
     async addToCart(product) {
       const productId = product.id;
       const url = `https://jurapro.bhuser.ru/api-shop/cart/${productId}`;
@@ -108,10 +84,30 @@ export default {
       // Функция для проверки идентичности товаров
       return item1.id === item2.id && item1.name === item2.name && item1.description === item2.description && item1.price === item2.price;
     },
-
-    logout(){
+    // Выход из аккаунта
+    logout() {
       localStorage.removeItem('userToken');
       this.$router.push('/');
+    },
+
+    async getProduct(){
+      const url = "https://jurapro.bhuser.ru/api-shop/products";
+      const response = await fetch(url,{
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+
+      })
+      if (response.ok) {
+        const result = await response.json();
+        this.products = result.data
+        console.log('Result: ', result)
+      } else {
+        this.error = "Ошибка";
+        console.error(this.error);
+      }
+
 
     }
   },
@@ -120,174 +116,60 @@ export default {
       return !!localStorage.getItem('userToken');
     }
   }
-
-}
+};
 </script>
 
 <style>
-*{
-  font-size: 20px;
-}
-
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-
-}
-.catalog{
-  cursor: pointer;
-}
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
-}
-
-
-.nav{
-  display: flex;
-  flex-direction: row;
-}
-.btn {
-  background-color: #42b983;
-  border-radius: 5px;
-  color: #FFF;
-  display: block;
+.ag-courses_item{
+  border: 1px solid fuchsia;
   padding: 10px;
-  text-align: center;
-  text-decoration: none;
-  text-transform: capitalize;
-  width: 100%;
-  transition: box-shadow .3s ease-in-out,
-  transform .3s ease-in-out;
-  outline: none;
+  margin-bottom: 15px;
+  margin-left: 50px;
 }
+body{
+  background-color: #42b983;
+}
+
+
 h1{
-  font-size: 32px;
+  text-align: center;
 }
-.btn:hover {
-  box-shadow: 0 5px 10px rgba(0,0,0,.3);
-  transform: translateY(-2px);
-}
-.ag-format-container {
-  width: 1142px;
+.home-container {
+  max-width: 800px;
   margin: 0 auto;
 }
-.ag-courses_item {
-  -ms-flex-preferred-size: calc(33.33333% - 30px);
-  flex-basis: calc(33.33333% - 30px);
 
-  margin: 0 15px 30px;
-
-  overflow: hidden;
-
-  border-radius: 28px;
+.auth-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
 }
-.ag-courses-item_link {
-  display: block;
-  padding: 30px 20px;
-  background-color: #192a56;
 
-  overflow: hidden;
-  position: relative;
-}
-.ag-courses-item_link:hover,
-.ag-courses-item_link:hover .description{
+.auth-button {
+  margin-left: 10px;
   text-decoration: none;
-  color: #FFF;
-}
-.ag-courses-item_link:hover .ag-courses-item_bg {
-  -webkit-transform: scale(10);
-  -ms-transform: scale(10);
-  transform: scale(10);
-}
-.title {
-  min-height: 87px;
-  margin: 0 0 25px;
-  overflow: hidden;
-  font-weight: bold;
-  font-size: 30px;
-  color: #FFF;
-  z-index: 2;
-  position: relative;
-}
-.ag-courses-item_date-box {
-  font-size: 18px;
-  color: #FFF;
-  z-index: 2;
-  position: relative;
-
-}
-.description {
-  font-weight: bold;
-  -webkit-transition: color .5s ease;
-  -o-transition: color .5s ease;
-  transition: color .5s ease
-}
-.price {
-  font-weight: bold;
-  -webkit-transition: color .5s ease;
-  -o-transition: color .5s ease;
-  transition: color .5s ease
-}
-.ag-courses-item_bg {
-  height: 128px;
-  width: 128px;
-  background-color: #42b983;
-  z-index: 1;
-  position: absolute;
-  top: -75px;
-  right: -75px;
-  border-radius: 50%;
-  -webkit-transition: all .5s ease;
-  -o-transition: all .5s ease;
-  transition: all .5s ease;
-}
-@media only screen and (max-width: 979px) {
-  .ag-courses_item {
-    -ms-flex-preferred-size: calc(50% - 30px);
-    flex-basis: calc(50% - 30px);
-  }
-  .title {
-    font-size: 24px;
-  }
+  color: fuchsia;
 }
 
-@media only screen and (max-width: 767px) {
-  .ag-format-container {
-    width: 96%;
-  }
+.auth-button:hover {
+  text-decoration: underline;
+}
 
-}
-@media only screen and (max-width: 639px) {
-  .ag-courses_item {
-    -ms-flex-preferred-size: 100%;
-    flex-basis: 100%;
-  }
-  .title {
-    min-height: 72px;
-    font-size: 24px;
-  }
-  .ag-courses-item_link {
-    padding: 22px 40px;
-  }
-  .ag-courses-item_date-box {
-    font-size: 16px;
-  }
-}
-.btn_cart_link{
-  text-decoration: none;
+
+
+.add-to-cart-button,
+.logout-button {
+  background-color: fuchsia;
   color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
+
+.add-to-cart-button:hover,
+.logout-button:hover {
+  background-color: red;
+}
+
 </style>
