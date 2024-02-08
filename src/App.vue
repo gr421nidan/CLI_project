@@ -1,7 +1,10 @@
 <template>
   <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <router-link to="/">Главная</router-link> |
+    <router-link to="/login">Вход</router-link> |
+    <router-link to="/registration">Регистрация</router-link>
+<!--    <router-link to="/basket">Корзина</router-link> |-->
+<!--    <router-link to="/myorders">Мои заказы</router-link>-->
   </nav>
   <router-view/>
 </template>
@@ -28,3 +31,5 @@ nav a.router-link-exact-active {
   color: #42b983;
 }
 </style>
+<script setup>
+</script>
