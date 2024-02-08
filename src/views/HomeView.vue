@@ -155,10 +155,6 @@ nav a.router-link-exact-active {
 }
 
 
-.nav{
-  display: flex;
-  flex-direction: row;
-}
 .btn {
   background-color: #42b983;
   border-radius: 5px;
