@@ -8,21 +8,29 @@
       <!--    <router-link to="/basket">Корзина</router-link> |-->
       <!--    <router-link to="/myorders">Мои заказы</router-link>-->
     </nav>
+
     <div>
-      <h1>Каталог товаров</h1>
-      <div class="flowers">
-        <div class="card" v-for="product in products" :key="product.id">
-          <figure>
-            <img :src="product.image" alt="flowers" class="product-image">
-          </figure>
-          <section class="details">
-            <div class="min-details">
-              <h1>{{ product.name }}<span>{{ product.description }}</span></h1>
-              <h1 class="price">{{ product.price }}руб.</h1>
-            </div>
+      <h1 class="catalog" @click="getProduct">Каталог товаров</h1>
+      <div class="ag-format-container">
+      </div>
+      <div class="ag-courses_item" v-for="product in products" :key="product.id">
+        <a href="#" class="ag-courses-item_link">
+          <div class="ag-courses-item_bg"></div>
+
+          <div class="title">
+            {{ product.name }}
+          </div>
+
+          <div class="ag-courses-item_date-box">
+            <span class="description">
+            {{ product.description }}
+          </span>
+            <p class="price">
+            {{ product.price }}руб.
+          </p>
             <button class="btn">В корзину</button>
-          </section>
-        </div>
+          </div>
+        </a>
       </div>
     </div>
   </div>
@@ -36,16 +44,32 @@ export default {
   name: 'HomeView',
   data() {
     return {
-      products: [
-        {id: 1, name: 'Розы', description: 'Розовые', image: '../assets/pink_roses.jpg', price: 6000},
-        {id: 2, name: 'Розы', description: 'Белые', image: 'src/assets/white_roses.jpg', price: 8000},
-        {id: 3, name: 'Пионы', description: 'Голубые', image: 'src/assets/blue_pionies.jpg', price: 7000},
-        {id: 4, name: 'Пионы', description: 'Белые', image: 'src/assets/white_pionies.jpg', price: 9000},
-      ],
-      authenticated: false,
+      products: [],
     }
 
-}
+  },
+  methods:{
+    async getProduct(){
+      const url = "https://jurapro.bhuser.ru/api-shop/products";
+      const response = await fetch(url,{
+        method: 'GET',
+            headers: {
+          'Content-Type': 'application/json',
+        },
+
+      });
+      if (response.ok) {
+        const result = await response.json();
+        this.products = result.data
+        console.log('Result: ', result)
+      } else {
+        this.error = "Ошибка";
+        console.error(this.error);
+      }
+
+
+    }
+  }
 }
 </script>
 
@@ -56,8 +80,11 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
 
+}
+.catalog{
+  cursor: pointer;
+}
 nav {
   padding: 30px;
 }
@@ -70,64 +97,11 @@ nav a {
 nav a.router-link-exact-active {
   color: #42b983;
 }
-.flowers{
-  display: flex;
-  justify-content: space-between;
-}
-h1 {
-  font-size: 1.2rem;
-  text-transform: capitalize;
-}
 
-.card {
-  position: relative;
-  border-radius: 5px;
-  box-shadow: 0 5px 10px rgba(0,0,0,0.3);
-  height: 400px;
-  overflow: hidden;
-  width: 350px;
-}
-
-.card > figure {
-  width: 90%;
-  margin: 20px auto 0 auto;
-}
-
-.card > figure > img {
-  width: 100%;
-}
-.details {
-  background-color: #FFF;
-  border-radius: 10px;
-  padding: 20px;
-  position: absolute;
-  top: 85%;
-  width: 309px;
-  transition: box-shadow .3s ease-in-out,
-  top .3s ease-in-out;
-}
-
-.card:hover .details {
-  box-shadow: 0 -5px 10px rgba(0,0,0,0.3);
-  top: 40%;
-}
-
-
-.details > .min-details {
-  display: flex;
-  justify-content: space-between;
-}
-
-.details > .min-details > h1 > span {
-  color: #7B7B7B;
-  display: block;
-  font-size: .9rem;
-  font-weight: 400;
-}
 
 
 .btn {
-  background-color: #192a56;
+  background-color: #42b983;
   border-radius: 5px;
   color: #FFF;
   display: block;
@@ -138,10 +112,117 @@ h1 {
   width: 100%;
   transition: box-shadow .3s ease-in-out,
   transform .3s ease-in-out;
+  outline: none;
 }
 
 .btn:hover {
   box-shadow: 0 5px 10px rgba(0,0,0,.3);
   transform: translateY(-2px);
+}
+.ag-format-container {
+  width: 1142px;
+  margin: 0 auto;
+}
+.ag-courses_item {
+  -ms-flex-preferred-size: calc(33.33333% - 30px);
+  flex-basis: calc(33.33333% - 30px);
+
+  margin: 0 15px 30px;
+
+  overflow: hidden;
+
+  border-radius: 28px;
+}
+.ag-courses-item_link {
+  display: block;
+  padding: 30px 20px;
+  background-color: #192a56;
+  text-decoration: none;
+  overflow: hidden;
+  position: relative;
+}
+.ag-courses-item_link:hover,
+.ag-courses-item_link:hover .description{
+  text-decoration: none;
+  color: #FFF;
+}
+.ag-courses-item_link:hover .ag-courses-item_bg {
+  -webkit-transform: scale(10);
+  -ms-transform: scale(10);
+  transform: scale(10);
+}
+.title {
+  min-height: 87px;
+  margin: 0 0 25px;
+  overflow: hidden;
+  font-weight: bold;
+  font-size: 30px;
+  color: #FFF;
+  z-index: 2;
+  position: relative;
+}
+.ag-courses-item_date-box {
+  font-size: 18px;
+  color: #FFF;
+  z-index: 2;
+  position: relative;
+
+}
+.description {
+  font-weight: bold;
+  -webkit-transition: color .5s ease;
+  -o-transition: color .5s ease;
+  transition: color .5s ease
+}
+.price {
+  font-weight: bold;
+  -webkit-transition: color .5s ease;
+  -o-transition: color .5s ease;
+  transition: color .5s ease
+}
+.ag-courses-item_bg {
+  height: 128px;
+  width: 128px;
+  background-color: #42b983;
+  z-index: 1;
+  position: absolute;
+  top: -75px;
+  right: -75px;
+  border-radius: 50%;
+  -webkit-transition: all .5s ease;
+  -o-transition: all .5s ease;
+  transition: all .5s ease;
+}
+@media only screen and (max-width: 979px) {
+  .ag-courses_item {
+    -ms-flex-preferred-size: calc(50% - 30px);
+    flex-basis: calc(50% - 30px);
+  }
+  .title {
+    font-size: 24px;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .ag-format-container {
+    width: 96%;
+  }
+
+}
+@media only screen and (max-width: 639px) {
+  .ag-courses_item {
+    -ms-flex-preferred-size: 100%;
+    flex-basis: 100%;
+  }
+  .title {
+    min-height: 72px;
+    font-size: 24px;
+  }
+  .ag-courses-item_link {
+    padding: 22px 40px;
+  }
+  .ag-courses-item_date-box {
+    font-size: 16px;
+  }
 }
 </style>
