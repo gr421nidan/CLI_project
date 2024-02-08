@@ -1,20 +1,25 @@
 <template>
   <div class="home">
-    <nav>
-      <router-link to="/">Главная</router-link> |
-      <router-link to="/registration">Регистрация</router-link> |
-      <router-link to="/login">Вход</router-link> |
 
-      <!--    <router-link to="/basket">Корзина</router-link> |-->
-      <!--    <router-link to="/myorders">Мои заказы</router-link>-->
-    </nav>
+      <nav>
+        <router-link to="/">Главная</router-link> |
+        <span v-if="!isAuthenticated">
+          <router-link to="/registration">Регистрация</router-link> |
+          <router-link to="/login">Вход</router-link>
+        </span>
+        <span v-if="isAuthenticated">
+          <router-link to="/" @click="logout">Выход</router-link> |
+          <router-link to="/cart">Корзина</router-link> |
+          <!--    <router-link to="/myorders">Мои заказы</router-link>-->
+        </span>
+      </nav>
 
     <div>
       <h1 class="catalog" @click="getProduct">Каталог товаров</h1>
       <div class="ag-format-container">
       </div>
       <div class="ag-courses_item" v-for="product in products" :key="product.id">
-        <a href="#" class="ag-courses-item_link">
+        <span class="ag-courses-item_link">
           <div class="ag-courses-item_bg"></div>
 
           <div class="title">
@@ -28,9 +33,10 @@
             <p class="price">
             {{ product.price }}руб.
           </p>
-            <button class="btn">В корзину</button>
+            <button  v-if="isAuthenticated" @click="addToCart(product)" type="submit" class="btn">В корзину</button>
+            <button  v-if="!isAuthenticated" type="submit" class="btn"><router-link  to="/login" class="btn_cart_link">В корзину</router-link></button>
           </div>
-        </a>
+        </span>
       </div>
     </div>
   </div>
@@ -45,6 +51,7 @@ export default {
   data() {
     return {
       products: [],
+      productsInCart: []
     }
 
   },
@@ -68,12 +75,60 @@ export default {
       }
 
 
+    },
+    async addToCart(product) {
+      const productId = product.id;
+      const url = `https://jurapro.bhuser.ru/api-shop/cart/${productId}`;
+      const userToken = localStorage.getItem('userToken');
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${userToken}`
+          }
+        });
+        if (response.ok) {
+          const existingItemIndex = this.productsInCart.findIndex(item => item.id === product.id);
+          if (existingItemIndex !== -1 && this.productExists(this.productsInCart[existingItemIndex], product)) {
+            this.productsInCart[existingItemIndex].quantity++;
+          } else {
+            this.productsInCart.push({...product, quantity: 1});
+          }
+          const data = await response.json();
+          console.log(data.data.message);
+        } else {
+          console.error("Ошибка добавления товара в корзину:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Ошибка добавления товара в корзину:", error);
+      }
+    },
+    productExists(item1, item2) {
+      // Функция для проверки идентичности товаров
+      return item1.id === item2.id && item1.name === item2.name && item1.description === item2.description && item1.price === item2.price;
+    },
+
+    logout(){
+      localStorage.removeItem('userToken');
+      this.$router.push('/');
+
+    }
+  },
+  computed: {
+    isAuthenticated() {
+      return !!localStorage.getItem('userToken');
     }
   }
+
 }
 </script>
 
 <style>
+*{
+  font-size: 20px;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -92,6 +147,7 @@ nav {
 nav a {
   font-weight: bold;
   color: #2c3e50;
+
 }
 
 nav a.router-link-exact-active {
@@ -99,7 +155,10 @@ nav a.router-link-exact-active {
 }
 
 
-
+.nav{
+  display: flex;
+  flex-direction: row;
+}
 .btn {
   background-color: #42b983;
   border-radius: 5px;
@@ -114,7 +173,9 @@ nav a.router-link-exact-active {
   transform .3s ease-in-out;
   outline: none;
 }
-
+h1{
+  font-size: 32px;
+}
 .btn:hover {
   box-shadow: 0 5px 10px rgba(0,0,0,.3);
   transform: translateY(-2px);
@@ -137,7 +198,7 @@ nav a.router-link-exact-active {
   display: block;
   padding: 30px 20px;
   background-color: #192a56;
-  text-decoration: none;
+
   overflow: hidden;
   position: relative;
 }
@@ -224,5 +285,9 @@ nav a.router-link-exact-active {
   .ag-courses-item_date-box {
     font-size: 16px;
   }
+}
+.btn_cart_link{
+  text-decoration: none;
+  color: white;
 }
 </style>

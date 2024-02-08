@@ -1,14 +1,22 @@
 <template>
   <div>
-    <h2>Регистрация</h2>
+    <nav>
+      <router-link to="/">Главная</router-link> |
+      <router-link to="/registration">Регистрация</router-link>
+    </nav>
+    <h1>Регистрация</h1>
     <div class="form-register">
       <form @submit.prevent="register" class="register">
         <input type="text" v-model="fio" placeholder="fio">
         <input type="email" v-model="email" placeholder="email">
         <input type="password" v-model="password" placeholder="Password">
-        <button type="submit">Зарегистрироваться</button>
+        <div class="buttons">
+          <button @click="goBack">Назад</button>
+          <button type="submit">Зарегистрироваться</button>
+        </div>
+
       </form>
-      <p v-if="error">{{ error }}</p>
+
     </div>
   </div>
 </template>
@@ -44,6 +52,10 @@ export default {
         console.error('Ошибка:', this.error);
       }
 
+
+    },
+    goBack(){
+      this.$router.push('/');
     }
 
   }
@@ -56,7 +68,7 @@ export default {
 }
 .register {
   overflow: hidden;
-  background-color: #2c3e50;
+  background-color: #192a56;
   padding: 40px 30px 30px 30px;
   border-radius: 10px;
   width: 400px;
@@ -73,7 +85,11 @@ input {
   padding: 10px 10px;
   margin: 15px -10px;
 }
-
+.buttons{
+  display: flex;
+  flex-direction: row;
+  gap:15px;
+}
 button {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   cursor: pointer;

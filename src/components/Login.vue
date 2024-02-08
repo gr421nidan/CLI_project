@@ -1,13 +1,22 @@
 <template>
   <div>
-    <h2>Вход</h2>
+    <nav>
+      <router-link to="/">Главная</router-link> |
+      <router-link to="/registration">Регистрация</router-link> |
+      <router-link to="/login">Вход</router-link>
+    </nav>
+    <h1>Вход</h1>
     <div class="form-login">
       <form @submit.prevent="login" class="login">
         <input type="email" v-model="email" placeholder="email">
         <input type="password" v-model="password" placeholder="Password">
-        <button type="submit">Вход</button>
+
+        <div class="buttons">
+          <button @click="goBack">Назад</button>
+          <button type="submit">Вход</button>
+        </div>
       </form>
-      <p v-if="error">{{ error }}</p>
+
     </div>
 
   </div>
@@ -20,7 +29,8 @@ export default {
 
       email: '',
       password: '',
-      error: ''
+      error: '',
+      isAuthenticated: false,
     }
   },
   methods: {
@@ -42,9 +52,14 @@ export default {
         this.$router.push('/'); // Перенаправляем пользователя на главную страницу
       } else {
         this.error = "Неверные учетные данные";
+        console.error('Ошибка:', this.error);
       }
-
+      this.isAuthenticated = true
+    },
+    goBack(){
+      this.$router.push('/');
     }
+
   }
 }
 </script>
@@ -55,7 +70,7 @@ export default {
 }
 .login {
   overflow: hidden;
-  background-color: #2c3e50;
+  background-color: #192a56;
   padding: 40px 30px 30px 30px;
   border-radius: 10px;
   width: 400px;
