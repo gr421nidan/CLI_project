@@ -31,6 +31,7 @@
             <div class="row_blocki">
               <button class="btn_plus_minus">-</button>
               <button class="btn_plus_minus">+</button>
+              <p>Количество:</p>
             </div>
             <button @click="removeFromCart(product)" type="submit" class="btn">Удалить</button>
           </div>
@@ -106,8 +107,8 @@ export default {
           }
         });
         if (response.ok) {
-          this.productsCart = this.productsCart.filter(cartItem => cartItem.id !== product.id);
           console.log("Товар успешно удален!");
+          location.reload();
           const data = await response.json();
           console.log(data.data.message);
         } else {
@@ -136,6 +137,7 @@ export default {
           } else {
             this.myOrder.push({...product});
           }
+
           const data = await response.json();
           console.log(data.data.message);
           this.$router.push('/order');
@@ -151,7 +153,8 @@ export default {
     },
     goBack(){
       this.$router.push('/');
-    }
+    },
+
   }
 }
 </script>
