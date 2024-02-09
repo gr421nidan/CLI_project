@@ -18,6 +18,9 @@
       </form>
 
     </div>
+    <div class="show-error" v-if="showBlock">
+      {{ error}}
+    </div>
 
   </div>
 </template>
@@ -30,6 +33,7 @@ export default {
       email: '',
       password: '',
       error: '',
+      showBlock: false
 
     }
   },
@@ -51,7 +55,13 @@ export default {
         localStorage.setItem('userToken', userToken.data.user_token);
         this.$router.push('/'); // Перенаправляем пользователя на главную страницу
       } else {
-        this.error = "Неверные учетные данные";
+        this.error='Неверные учетные данные'
+        this.email=''
+        this.password=''
+        this.showBlock = true;
+        setTimeout(() => {
+          this.showBlock = false;
+        }, 3000);
         console.error('Ошибка:', this.error);
       }
 
@@ -106,5 +116,18 @@ button {
 .btn_login:hover{
   box-shadow: 0 5px 10px rgba(0,0,0,.3);
   transform: translateY(-2px);
+}
+.show-error{
+  margin-top: 20px;
+  background-color: #192a56;
+  width: 460px;
+  height: 30px;
+  color: white;
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+  border-radius: 10px;
+  text-align: center;
+
 }
 </style>

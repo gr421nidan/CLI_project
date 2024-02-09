@@ -18,6 +18,9 @@
       </form>
 
     </div>
+    <div class="show-error" v-if="showBlock">
+      {{ error}}
+    </div>
   </div>
 </template>
 
@@ -28,7 +31,8 @@ export default {
       fio: '',
       email: '',
       password: '',
-      error: ''
+      error: '',
+      showBlock: ''
     }
   },
   methods: {
@@ -49,6 +53,13 @@ export default {
         this.$router.push('/login'); // Перенаправляем пользователя на авторизацию
       } else {
         this.error = "Ошибка при регистрации";
+        this.fio=''
+        this.email=''
+        this.password=''
+        this.showBlock = true;
+        setTimeout(() => {
+          this.showBlock = false;
+        }, 3000);
         console.error('Ошибка:', this.error);
       }
 
