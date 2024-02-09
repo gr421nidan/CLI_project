@@ -19,7 +19,7 @@
 
         <div class="ag-courses-item_date-box">
           <span class="description">
-          {{ order.products.join("; ") }}
+          Выбранные товары: {{ order.products.join("; ") }}
         </span>
           <p class="price">
             Стоимость заказа: {{ order.order_price }}руб.
