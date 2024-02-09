@@ -11,9 +11,8 @@
       <div v-if="productsCart.length === 0">
           <p>Пусто!</p>
       </div>
-      <div v-else class="ag-format-container">
-      </div>
-      <div class="ag-courses_item" v-for="product in productsCart" :key="product.id">
+      <div class="row">
+        <div class="ag-courses_item" v-for="product in productsCart" :key="product.id">
       <span class="ag-courses-item_link">
         <div class="ag-courses-item_bg"></div>
 
@@ -31,8 +30,12 @@
           <button @click="removeFromCart(product)" type="submit" class="btn">Удалить</button>
         </div>
       </span>
+        </div>
       </div>
-      <button v-if="productsCart.length !== 0" @click="addToMyOrder(product)" type="submit" class="btn_to_orders">Заказать</button>
+      <div class="buttons">
+        <button v-if="productsCart.length !== 0" @click="goBack">Назад</button>
+        <button v-if="productsCart.length !== 0" @click="addToMyOrder(product)" type="submit">Заказать</button>
+      </div>
     </div>
   </div>
 </template>
@@ -140,12 +143,28 @@ export default {
     productExists(item1, item2) {
       return item1.id === item2.id && item1.name === item2.name && item1.description === item2.description && item1.price === item2.price;
     },
+    goBack(){
+      this.$router.push('/');
+    }
   }
 }
 </script>
 
 
 <style >
+button{
+  background: #42b983;
+  color: white;
+}
+.buttons{
+  justify-content: center;
+
+}
+.row{
+  display: grid;
+  grid-template-columns: repeat(3, 420px);
+  margin-left: 120px;
+}
 .btn_to_orders{
   background-color: #42b983;
   border-radius: 5px;
@@ -170,10 +189,7 @@ export default {
   box-shadow: 0 5px 10px rgba(0,0,0,.3);
   transform: translateY(-2px);
 }
-.ag-format-container {
-  width: 1142px;
-  margin: 0 auto;
-}
+
 .ag-courses_item {
   -ms-flex-preferred-size: calc(33.33333% - 30px);
   flex-basis: calc(33.33333% - 30px);

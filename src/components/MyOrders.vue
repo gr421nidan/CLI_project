@@ -9,9 +9,8 @@
       <div v-if="myOrders.length === 0">
         <p>Пусто!</p>
       </div>
-      <div v-else class="ag-format-container">
-      </div>
-      <div class="ag-courses_item" v-for="order in myOrders" :key="order.id">
+      <div class="row">
+        <div class="ag-courses_item" v-for="order in myOrders" :key="order.id">
       <span class="ag-courses-item_link">
         <div class="ag-courses-item_bg"></div>
         <div class="title">Заказ №{{order.id}}</div>
@@ -26,7 +25,9 @@
           </p>
         </div>
       </span>
+        </div>
       </div>
+
     </div>
   </div>
 </template>
@@ -68,6 +69,7 @@ export default {
         console.error(this.error);
       }
     },
+
   }
 }
 </script>
@@ -82,6 +84,7 @@ export default {
 
 .ag-courses-item_link {
   background-color: #42b983;
+  height: 100%;
 
 }
 

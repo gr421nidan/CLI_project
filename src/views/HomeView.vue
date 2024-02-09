@@ -16,9 +16,9 @@
 
     <div>
       <h1 class="catalog">Каталог товаров</h1>
-      <div class="ag-format-container">
-      </div>
-      <div class="ag-courses_item" v-for="product in products" :key="product.id">
+      <div class="row">
+
+        <div class="ag-courses_item" v-for="product in products" :key="product.id">
         <span class="ag-courses-item_link">
           <div class="ag-courses-item_bg"></div>
 
@@ -37,7 +37,9 @@
             <button  v-if="!isAuthenticated" type="submit" class="btn"><router-link  to="/login" class="btn_cart_link">В корзину</router-link></button>
           </div>
         </span>
+        </div>
       </div>
+
     </div>
   </div>
 </template>
@@ -115,6 +117,8 @@ export default {
     logout(){
       localStorage.removeItem('userToken');
       this.$router.push('/');
+      location.reload();
+
 
     }
   },
@@ -140,6 +144,11 @@ export default {
   color: #2c3e50;
 
 }
+.row{
+  display: grid;
+  grid-template-columns: repeat(3, 420px);
+
+}
 .catalog{
   cursor: pointer;
 }
@@ -152,11 +161,9 @@ nav a {
   color: #2c3e50;
 
 }
-
 nav a.router-link-exact-active {
   color: #42b983;
 }
-
 
 .btn {
   background-color: #42b983;
@@ -179,10 +186,7 @@ h1{
   box-shadow: 0 5px 10px rgba(0,0,0,.3);
   transform: translateY(-2px);
 }
-.ag-format-container {
-  width: 1142px;
-  margin: 0 auto;
-}
+
 .ag-courses_item {
   -ms-flex-preferred-size: calc(33.33333% - 30px);
   flex-basis: calc(33.33333% - 30px);
@@ -197,9 +201,9 @@ h1{
   display: block;
   padding: 30px 20px;
   background-color: #192a56;
-
   overflow: hidden;
   position: relative;
+  height: 370px;
 }
 .ag-courses-item_link:hover,
 .ag-courses-item_link:hover .description{
@@ -232,7 +236,10 @@ h1{
   font-weight: bold;
   -webkit-transition: color .5s ease;
   -o-transition: color .5s ease;
-  transition: color .5s ease
+  transition: color .5s ease;
+  text-align: center;
+  font-size: 16px;
+
 }
 .price {
   font-weight: bold;
