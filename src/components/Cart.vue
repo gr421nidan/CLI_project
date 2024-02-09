@@ -3,16 +3,18 @@
   <div>
     <nav>
       <router-link to="/">Главная</router-link> |
-      <router-link to="/cart" @click="getProductCart">Корзина</router-link> |
-
-      <!--    <router-link to="/myorders">Мои заказы</router-link>-->
+      <router-link to="/cart">Корзина</router-link> |
+      <router-link to="/order">Мои заказы</router-link>
     </nav>
     <div>
-      <h1 class="catalog" @click="getProductCart">Товары</h1>
-      <div class="ag-format-container">
+      <h1 class="catalog">Товары</h1>
+      <div v-if="productsCart.length === 0">
+          <p>Пусто!</p>
       </div>
-      <div class="ag-courses_item" v-for="product in productCart" :key="product.id">
-      <span href="#" class="ag-courses-item_link">
+      <div v-else class="ag-format-container">
+      </div>
+      <div class="ag-courses_item" v-for="product in productsCart" :key="product.id">
+      <span class="ag-courses-item_link">
         <div class="ag-courses-item_bg"></div>
 
         <div class="title">
@@ -26,12 +28,11 @@
           <p class="price">
             {{ product.price }}руб.
           </p>
-          <button type="submit" class="btn">Удалить</button>
-          <button type="submit" class="btn">Заказать</button>
-
+          <button @click="removeFromCart(product)" type="submit" class="btn">Удалить</button>
         </div>
       </span>
       </div>
+      <button v-if="productsCart.length !== 0" @click="addToMyOrder(product)" type="submit" class="btn_to_orders">Заказать</button>
     </div>
   </div>
 </template>
@@ -39,10 +40,15 @@
 <script >
 
 export default {
+  name: 'Cart',
   data() {
     return {
-      productCart: [],
-    }
+      productsCart: [],
+      myOrder:[]
+    };
+  },
+  created() {
+    this.getProductCart();
   },
   methods: {
     async getProductCart(){
@@ -62,9 +68,10 @@ export default {
       });
       if (response.ok) {
         const result = await response.json();
-        this.productCart = result.data
+        this.productsCart = result.data
 
         console.log('Result: ', result)
+
       } else {
         this.error = "Ошибка";
         console.error(this.error);
@@ -72,13 +79,93 @@ export default {
 
 
     },
+    async removeFromCart(product) {
+
+      const userToken = localStorage.getItem('userToken');
+      if (!userToken) {
+        console.error('Токен отсутствует');
+        return;
+      }
+
+      const url = `https://jurapro.bhuser.ru/api-shop/cart/${product.id}`;
+      try {
+        const response = await fetch(url, {
+          method: 'DELETE',
+          headers: {
+
+            "Authorization": `Bearer ${userToken}`
+          }
+        });
+        if (response.ok) {
+          this.productsCart = this.productsCart.filter(cartItem => cartItem.id !== product.id);
+          console.log("Товар успешно удален!");
+          const data = await response.json();
+          console.log(data.data.message);
+        } else {
+          console.error("Ошибка удаления товара из корзины:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Ошибка удаления товара из корзины:", error);
+      }
+    },
+
+    async addToMyOrder(product) {
+      const url = 'https://jurapro.bhuser.ru/api-shop/order';
+      const userToken = localStorage.getItem('userToken');
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${userToken}`
+          }
+        });
+        if (response.ok) {
+          const existingItemIndex = this.myOrder.findIndex(item => item.id === product.id);
+          if (existingItemIndex !== -1 && this.productExists(this.myOrder[existingItemIndex], product)) {
+            this.myOrder[existingItemIndex].quantity++;
+          } else {
+            this.myOrder.push({...product});
+          }
+          const data = await response.json();
+          console.log(data.data.message);
+          this.$router.push('/order');
+        } else {
+          console.error("Ошибка добавления товара в мои заказы:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Ошибка добавления товара в мои заказы:", error);
+      }
+    },
+    productExists(item1, item2) {
+      return item1.id === item2.id && item1.name === item2.name && item1.description === item2.description && item1.price === item2.price;
+    },
   }
 }
 </script>
 
 
 <style >
-
+.btn_to_orders{
+  background-color: #42b983;
+  border-radius: 5px;
+  color: #FFF;
+  display: block;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: capitalize;
+  margin-left: auto;
+  margin-right: auto;
+  width: 600px;
+  transition: box-shadow .3s ease-in-out,
+  transform .3s ease-in-out;
+  outline: none;
+}
+.btn_to_orders:hover{
+  box-shadow: 0 5px 10px rgba(0,0,0,.3);
+  transform: translateY(-2px);
+}
 .btn:hover {
   box-shadow: 0 5px 10px rgba(0,0,0,.3);
   transform: translateY(-2px);
@@ -189,8 +276,5 @@ export default {
     font-size: 16px;
   }
 }
-.btn_cart_link{
-  text-decoration: none;
-  color: white;
-}
+
 </style>

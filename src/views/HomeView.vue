@@ -10,12 +10,12 @@
         <span v-if="isAuthenticated">
           <router-link to="/" @click="logout">Выход</router-link> |
           <router-link to="/cart">Корзина</router-link> |
-          <!--    <router-link to="/myorders">Мои заказы</router-link>-->
+          <router-link to="/order">Мои заказы</router-link>
         </span>
       </nav>
 
     <div>
-      <h1 class="catalog" @click="getProduct">Каталог товаров</h1>
+      <h1 class="catalog">Каталог товаров</h1>
       <div class="ag-format-container">
       </div>
       <div class="ag-courses_item" v-for="product in products" :key="product.id">
@@ -54,6 +54,9 @@ export default {
       productsInCart: []
     }
 
+  },
+  created() {
+    this.getProduct();
   },
   methods:{
     async getProduct(){
