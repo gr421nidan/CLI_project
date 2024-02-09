@@ -41,6 +41,9 @@
       </div>
 
     </div>
+    <div class="show" v-if="showBlock">
+      Товар успешно добавлен в корзину!
+    </div>
   </div>
 </template>
 
@@ -53,7 +56,8 @@ export default {
   data() {
     return {
       products: [],
-      productsInCart: []
+      productsInCart: [],
+      showBlock: false
     }
 
   },
@@ -94,24 +98,24 @@ export default {
           }
         });
         if (response.ok) {
-          const existingItemIndex = this.productsInCart.findIndex(item => item.id === product.id);
-          if (existingItemIndex !== -1 && this.productExists(this.productsInCart[existingItemIndex], product)) {
-            this.productsInCart[existingItemIndex].quantity++;
+          const existingItemIndex = this.productsInCart.find(item => item.id === product.id);
+          if (existingItemIndex){
+            existingItemIndex.quantity++;
           } else {
             this.productsInCart.push({...product, quantity: 1});
           }
           const data = await response.json();
           console.log(data.data.message);
+          this.showBlock = true;
+          setTimeout(() => {
+            this.showBlock = false;
+          }, 2000);
         } else {
           console.error("Ошибка добавления товара в корзину:", response.statusText);
         }
       } catch (error) {
         console.error("Ошибка добавления товара в корзину:", error);
       }
-    },
-    productExists(item1, item2) {
-      // Функция для проверки идентичности товаров
-      return item1.id === item2.id && item1.name === item2.name && item1.description === item2.description && item1.price === item2.price;
     },
 
     logout(){
@@ -270,12 +274,7 @@ h1{
   }
 }
 
-@media only screen and (max-width: 767px) {
-  .ag-format-container {
-    width: 96%;
-  }
 
-}
 @media only screen and (max-width: 639px) {
   .ag-courses_item {
     -ms-flex-preferred-size: 100%;
@@ -295,5 +294,16 @@ h1{
 .btn_cart_link{
   text-decoration: none;
   color: white;
+}
+.show {
+  position: fixed;
+  bottom: 580px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #192a56;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 99;
 }
 </style>

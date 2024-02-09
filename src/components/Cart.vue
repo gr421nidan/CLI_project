@@ -27,14 +27,20 @@
           <p class="price">
             {{ product.price }}руб.
           </p>
-          <button @click="removeFromCart(product)" type="submit" class="btn">Удалить</button>
+          <div class="row_blocks">
+            <div class="row_blocki">
+              <button class="btn_plus_minus">-</button>
+              <button class="btn_plus_minus">+</button>
+            </div>
+            <button @click="removeFromCart(product)" type="submit" class="btn">Удалить</button>
+          </div>
         </div>
       </span>
         </div>
       </div>
       <div class="buttons">
-        <button v-if="productsCart.length !== 0" @click="goBack">Назад</button>
-        <button v-if="productsCart.length !== 0" @click="addToMyOrder(product)" type="submit">Заказать</button>
+        <button class="btn_cart" v-if="productsCart.length !== 0" @click="goBack">Назад</button>
+        <button class="btn_cart" v-if="productsCart.length !== 0" @click="addToMyOrder(product)" type="submit">Заказать</button>
       </div>
     </div>
   </div>
@@ -152,6 +158,16 @@ export default {
 
 
 <style >
+.row_blocki{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+.btn_plus_minus{
+  height: 40px;
+  width: 40px;
+}
+
 button{
   background: #42b983;
   color: white;
@@ -188,6 +204,7 @@ button{
 .btn:hover {
   box-shadow: 0 5px 10px rgba(0,0,0,.3);
   transform: translateY(-2px);
+  background-color: #192a56;
 }
 
 .ag-courses_item {
@@ -292,5 +309,14 @@ button{
     font-size: 16px;
   }
 }
-
+.btn_plus_minus:hover{
+  background-color: #192a56;
+  box-shadow: 0 5px 10px rgba(0,0,0,.3);
+  transform: translateY(-2px);
+}
+.btn_cart:hover{
+  background-color: #192a56;
+  box-shadow: 0 5px 10px rgba(0,0,0,.3);
+  transform: translateY(-2px);
+}
 </style>

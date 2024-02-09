@@ -11,8 +11,8 @@
         <input type="email" v-model="email" placeholder="email">
         <input type="password" v-model="password" placeholder="Password">
         <div class="buttons">
-          <button @click="goBack">Назад</button>
-          <button type="submit">Зарегистрироваться</button>
+          <button class="btn_register" @click="goBack">Назад</button>
+          <button class='btn_register' type="submit">Зарегистрироваться</button>
         </div>
 
       </form>
@@ -104,5 +104,9 @@ button {
   border-radius: 5px;
   background-color: $redFire;
 
+}
+.btn_register:hover{
+  box-shadow: 0 5px 10px rgba(0,0,0,.3);
+  transform: translateY(-2px);
 }
 </style>

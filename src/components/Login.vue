@@ -12,8 +12,8 @@
         <input type="password" v-model="password" placeholder="Password">
 
         <div class="buttons">
-          <button @click="goBack">Назад</button>
-          <button type="submit">Вход</button>
+          <button class="btn_login" @click="goBack">Назад</button>
+          <button class="btn_login" type="submit">Вход</button>
         </div>
       </form>
 
@@ -30,7 +30,7 @@ export default {
       email: '',
       password: '',
       error: '',
-      isAuthenticated: false,
+
     }
   },
   methods: {
@@ -54,7 +54,7 @@ export default {
         this.error = "Неверные учетные данные";
         console.error('Ошибка:', this.error);
       }
-      this.isAuthenticated = true
+
     },
     goBack(){
       this.$router.push('/');
@@ -102,5 +102,9 @@ button {
   border-radius: 5px;
   background-color: $redFire;
 
+}
+.btn_login:hover{
+  box-shadow: 0 5px 10px rgba(0,0,0,.3);
+  transform: translateY(-2px);
 }
 </style>
