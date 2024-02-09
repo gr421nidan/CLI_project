@@ -29,9 +29,9 @@
           </p>
           <div class="row_blocks">
             <div class="row_blocki">
-              <button class="btn_plus_minus">-</button>
-              <button class="btn_plus_minus">+</button>
-              <p>Количество:</p>
+              <button @click="removeQuantity" class="btn_plus_minus">-</button>
+              <button @click="addQuantity" class="btn_plus_minus">+</button>
+              <p>Количество: {{quantity}}</p>
             </div>
             <button @click="removeFromCart(product)" type="submit" class="btn">Удалить</button>
           </div>
@@ -54,11 +54,21 @@ export default {
   data() {
     return {
       productsCart: [],
-      myOrder:[]
+      myOrder:[],
+      quantity: 1,
     };
   },
   created() {
     this.getProductCart();
+  },
+  mounted() {
+    if (localStorage.getItem('quantity')) {
+      try {
+        this.quantity = JSON.parse(localStorage.getItem('quantity'));
+      } catch (e) {
+        localStorage.removeItem('quantity');
+      }
+    }
   },
   methods: {
     async getProductCart(){
@@ -154,6 +164,20 @@ export default {
     goBack(){
       this.$router.push('/');
     },
+    addQuantity() {
+      this.quantity++;
+      this.saveLocalStorage();
+
+    },
+    removeQuantity() {
+      if (this.quantity > 1) {
+        this.quantity--;
+        this.saveLocalStorage();
+      }
+    },
+    saveLocalStorage() {
+      localStorage.setItem('quantity', JSON.stringify(this.quantity));
+    }
 
   }
 }

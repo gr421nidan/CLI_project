@@ -27,7 +27,7 @@
       </span>
         </div>
       </div>
-
+      <button class="btn_cart" v-if="myOrders.length !== 0" @click="goBack">Назад</button>
     </div>
   </div>
 </template>
@@ -68,6 +68,9 @@ export default {
         this.error = "Ошибка получения оформленных заказов";
         console.error(this.error);
       }
+    },
+    goBack(){
+      this.$router.push('/');
     },
 
   }
