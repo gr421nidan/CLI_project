@@ -1,19 +1,20 @@
 # my-app
 
-## Project setup
+## Настройка проекта
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### Компилятор для запуска приложения
 ```
 npm run serve
 ```
+### После запуска перейти на localhost
 
-### Compiles and minifies for production
+### Компилирует и минимизирует для производства
 ```
 npm run build
 ```
 
-### Customize configuration
+### Настройки конфигурации
 See [Configuration Reference](https://cli.vuejs.org/config/).
